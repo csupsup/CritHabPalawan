@@ -1,1 +1,1 @@
-# crithab_palawan
+This repo contains the R code used for vegetation and species distribution analyses presented in our manuscript "Supsup et al. Revisiting environmental management zones toward conserving globally important species in Western Philippines".
