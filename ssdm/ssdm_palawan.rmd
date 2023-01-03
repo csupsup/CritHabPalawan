@@ -123,8 +123,7 @@ write.csv(occurrenceRecords, "filtered.csv")
 #repeat steps to all species
 ```
 
-**3. Filter environmental variables
-
+**3. Filter environmental variables**
 ```{r, filter var}
 var.cor <- pearson_correlation_matrix(envi, cachesize = 20, same_mask = FALSE)
 plot_correlation(var.cor)
