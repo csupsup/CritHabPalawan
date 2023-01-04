@@ -14,7 +14,7 @@ library(knitr)
 ```
 ```{r, load require packages, results='hide'}
 #install packages
-list.of.packages <- c("devtools", "SSDM", "raster", "sp", "sf", "ggplot2", "sdmpredictors", "ecodist", "spThin")
+list.of.packages <- c("devtools", "SSDM", "raster", "sp", "sf", "ggplot2", "sdmpredictors", "ecodist", "spThin", "rJava")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 
 if(length(new.packages))
@@ -29,6 +29,7 @@ library(ggplot2)
 library(sdmpredictors)
 library(ecodist)
 library(spThin)
+library(rJava)  #needs java openjdk; set JAVA_HOME by editing javaconf via linux "sudo nano /usr/lib/R/etc/javaconf"
 ```
 **1. Load data**
 ```{r, load data}
@@ -53,7 +54,7 @@ ggplot() +
   theme(panel.background = element_blank(), axis.ticks = element_blank(), axis.text = element_blank(),legend.key = element_rect(fill = "transparent"))
 ```
 
-**2. Species records filtering**
+**2. Filter species records**
 ```{r, filter species records}
 #a. method 1 - remove duplicate records to retain only one per pixel
 
@@ -140,7 +141,7 @@ spp.fl <- load_occ(path = "spp_fl/", envi, Xcol = 'Longitude', Ycol='Latitude', 
 plot(Envi$pal_esalc_2019)
 points(spp$Longitude, spp$Latitude)
 #perform stacked species distribution modeling
-SSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, metric = "LW", ensemble.metric = "AUC", ensemble.thresh = 0, rep = 1, Spcol = "Species", method = 'pSSDM', save = TRUE, path = getwd(), tmp = TRUE)
+SSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, metric = "LW", ensemble.metric = "AUC", ensemble.thresh = 0, rep = 1, Spcol = "Species", method = 'bSSDM', save = TRUE, path = getwd(), tmp = TRUE)
 
 #view results
 plot(SSDM)
