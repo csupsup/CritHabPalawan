@@ -141,8 +141,12 @@ spp.fl <- load_occ(path = "spp_fl/", envi, Xcol = 'Longitude', Ycol='Latitude', 
 plot(Envi$pal_esalc_2019)
 points(spp$Longitude, spp$Latitude)
 #perform stacked species distribution modeling
-SSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, metric = "LW", ensemble.metric = "AUC", ensemble.thresh = 0, rep = 1, Spcol = "Species", method = 'bSSDM', save = TRUE, path = getwd(), tmp = TRUE)
+#sum of binary maps
+BSSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, metric = "SES", ensemble.metric = "AUC", rep = 1, Spcol = "Species", method = 'bSSDM', save = TRUE, path = getwd(), tmp = TRUE)
 
 #view results
 plot(SSDM)
+
+#save mode
+save.stack(BSSDM, name = "BStacked", path = getwd(), verbose = TRUE, GUI = FALSE)
 ```
