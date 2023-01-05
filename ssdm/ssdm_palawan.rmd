@@ -147,6 +147,6 @@ BSSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl
 #view results
 plot(SSDM)
 
-#save mode
+#save model
 save.stack(BSSDM, name = "BStacked", path = getwd(), verbose = TRUE, GUI = FALSE)
 ```
