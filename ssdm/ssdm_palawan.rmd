@@ -136,7 +136,7 @@ plot_correlation(var.cor)
 #read filtered/final variables
 envi.fl <- load_var(path = "envi_fl/",files = NULL, format = ".tif", categorical = c("pal_esalc_2019_rev"), Norm = FALSE, tmp = FALSE)
 #read filtered species records
-spp.fl <- load_occ(path = "spp_fl/", envi, Xcol = 'Longitude', Ycol='Latitude', Spcol = 'Species', sep=",", GeoRes = FALSE, header = TRUE)
+spp.fl <- load_occ(path = "spp_fl/", envi.fl, Xcol = 'Longitude', Ycol='Latitude', Spcol = 'Species', sep=",", GeoRes = FALSE, header = TRUE)
 #check data
 plot(Envi$pal_esalc_2019)
 points(spp$Longitude, spp$Latitude)
