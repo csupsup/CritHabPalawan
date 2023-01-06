@@ -143,7 +143,10 @@ points(spp$Longitude, spp$Latitude)
 
 #perform stacked species distribution modeling
 #sum of binary maps
-BSSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, metric = "SES", ensemble.metric = "AUC", rep = 1, Spcol = "Species", method = 'bSSDM', save = TRUE, path = getwd(), tmp = TRUE)
+#BSSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, metric = "SES", ensemble.metric = "AUC", rep = 1, Spcol = "Species", method = 'bSSDM', save = TRUE, path = getwd(), tmp = TRUE)
+
+#sum of probabilities of habitat suitability
+PSSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, ensemble.thres = 0, rep = 1, Spcol = "Species", method = 'pSSDM', save = TRUE, path = getwd(), tmp = TRUE)
 
 #view results
 plot(BSSDM)
