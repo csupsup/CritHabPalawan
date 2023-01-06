@@ -149,8 +149,11 @@ points(spp$Longitude, spp$Latitude)
 PSSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl, Xcol = 'Longitude', Ycol = 'Latitude', verbose = TRUE, ensemble.thres = 0, rep = 1, Spcol = "Species", method = 'pSSDM', save = TRUE, path = getwd(), tmp = TRUE)
 
 #view results
-plot(BSSDM)
+#plot(PSSDM)
+
+#plot diversity mao
+plot(PSSDM@diversity.map
 
 #save model
-save.stack(BSSDM, name = "BStacked", path = getwd(), verbose = TRUE, GUI = FALSE)
+save.stack(PSSDM, name = "PStacked", path = getwd(), verbose = TRUE, GUI = FALSE)
 ```
