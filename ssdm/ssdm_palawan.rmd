@@ -151,7 +151,7 @@ PSSDM <- stack_modelling(c('MAXENT', 'CTA', 'GLM', 'RF', 'SVM'), spp.fl, envi.fl
 #view results
 #plot(PSSDM)
 
-#plot diversity mao
+#plot diversity map
 plot(PSSDM@diversity.map
 
 #save model
