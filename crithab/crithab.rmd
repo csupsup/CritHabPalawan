@@ -1,0 +1,90 @@
+---
+title: "Identify important habitat"
+author: "Supsup et al."
+date: "06 January 2023"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+indent: no
+---
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+```{r, load require packages, results='hide'}
+#install packages
+list.of.packages <- c("raster", "terra", "sf", "tidyverse")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+
+if(length(new.packages)) install.packages(new.packages, repos = "http://cran.us.r-project.org")
+
+#load packages
+library(terra)
+library(raster)
+library(sf)
+```
+
+**1. Load vegetation and sdm data**
+```{r, load images}
+#read data
+veg <- rast("data/veg.tif")
+sdm <- rast("data/sdm.tif")
+
+#repoject data to utm
+#data.crs <- "+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs "
+#veg.utm <- rast(projectRaster(veg, crs = data.crs))
+#sdm.utm <- rast(projectRaster(sdm, crs = data.crs))
+
+#view data
+plot(veg, col = terrain.colors(255))
+plot(sdm)
+#convert data to polygon
+#system.time( veg.poly <- as.polygons(veg.utm)) #time stamp
+
+veg.poly <- as.polygons(veg)
+sdm.poly <- as.polygons(sdm)
+
+writeVector(veg.poly, "shapefiles/veg.poly.shp", overwrite = TRUE)
+writeVector(sdm.poly, "shapefiles/sdm.poly.shp", overwrite = TRUE)
+```
+
+**2. Intersect vegetation and sdm data**
+```{r, read shape}
+veg.shp <- st_read("shapefiles/veg.poly.shp", quiet = TRUE)
+sdm.shp <- st_read("shapefiles/sdm.poly.shp", quiet = TRUE)
+
+#intersect vegetation and sdm data
+sdm.veg.int <- intersect(veg.poly, sdm.poly)
+
+#export to shapefile
+writeVector(sdm.veg.int, "shapefiles/sdm.veg.shp", overwrite = TRUE)
+```
+
+**3. Identify important habitat**
+```{r, important hab}
+#read shapefile
+library(tidyverse)
+ch <- st_read("shapefiles/sdm.veg.shp", quiet = TRUE)
+
+#identify important habitat using the condition below
+
+#CVT + <10 SPP = Not Important
+#CVT + >10 SPP = Very Low Importance
+#ESG + < 10 SPP = Low Importance 
+#ESG + >10 SPP =  Moderate Importance 
+#ASG/OGF + MGR + <10 SPP = High Importance
+#ASG/OGF + MGR + >10 SPP = Highest Importance
+
+ch.id <- mutate(ch, crithab = if_else(veg==3 & sdm<10, "Not Important", if_else(veg==3 & sdm>=10, "Very Low Importance", if_else(veg==2 & sdm<10, "Low Importance", if_else(veg==2 & sdm>=10, "Moderate Importance", if_else(veg==1 & sdm<10, "High Importance", if_else(veg==1 & sdm>=10, "Highest Importance", if_else(veg==4 & sdm<10, "High Importance", if_else(veg==4 & sdm>=10, "Highest Importance", "Not Data")))))))))
+
+p <- vect(ch.id)
+
+#plot
+plot(p, "crithab", lwd = 0.01, main = "Critical habitat", mar=c(3.1, 3.1, 2.1, 9.1))
+
+#export critical habitat shapefile
+st_write(ch, "shapefiles/crithab.shp", driver="ESRI Shapefile")
+```
+
+
