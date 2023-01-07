@@ -51,19 +51,20 @@ writeVector(sdm.poly, "shapefiles/sdm.poly.shp", overwrite = TRUE)
 
 **2. Intersect vegetation and sdm data**
 ```{r, read shape}
+#read data
 veg.shp <- st_read("shapefiles/veg.poly.shp", quiet = TRUE)
 sdm.shp <- st_read("shapefiles/sdm.poly.shp", quiet = TRUE)
 
 #intersect vegetation and sdm data
 sdm.veg.int <- intersect(veg.poly, sdm.poly)
 
-#export to shapefile
+#export as shapefile
 writeVector(sdm.veg.int, "shapefiles/sdm.veg.shp", overwrite = TRUE)
 ```
 
 **3. Identify important habitat**
 ```{r, important hab}
-#read shapefile
+#read data
 library(tidyverse)
 ch <- st_read("shapefiles/sdm.veg.shp", quiet = TRUE)
 
@@ -86,5 +87,3 @@ plot(p, "crithab", lwd = 0.01, main = "Critical habitat", mar=c(3.1, 3.1, 2.1, 9
 #export critical habitat shapefile
 st_write(ch, "shapefiles/crithab.shp", driver="ESRI Shapefile")
 ```
-
-
