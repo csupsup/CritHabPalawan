@@ -1,5 +1,5 @@
 ---
-title: "Identify important habitat"
+title: "Critical Habitat Identification and ECAN Assessment"
 author: "Supsup et al."
 date: "06 January 2023"
 output:
@@ -84,6 +84,58 @@ p <- vect(ch.id)
 #plot
 plot(p, "crithab", lwd = 0.01, main = "Critical habitat", mar=c(3.1, 3.1, 2.1, 9.1))
 
-#export critical habitat shapefile
+#export critical habitat
 st_write(ch, "shapefiles/crithab.shp", driver="ESRI Shapefile")
+```
+
+**4. Identify mismatch between identified critical habitat and ecan core zone**
+```{r, identify mismatch}
+library(units)
+library(lwgeom)
+library(smoothr)
+library(rgdal)
+
+#read data
+ih.s <- readOGR(dsn = "shapefiles/", layer = "impthab")
+#get important habitat with highest importance
+high <- subset(ih.s, impthab == 'Highest Importance')
+#drop areas < 100m2
+high.dropped <- drop_crumbs(high, set_units(0.1, km^2))
+#export
+writeOGR(high.dropped, "shapefiles/", "high", driver="ESRI Shapefile")
+
+#read critical habitat
+ch <- st_read("shapefiles/high.shp", quiet = TRUE)
+#merge fragmented polygons
+ch.u <- ch %>% group_by(impthab) %>% summarise(geometry = sf::st_union(geometry)) %>% ungroup()
+ch.val <- st_make_valid(ch.u)
+#fill holes
+ch.filled <- fill_holes(ch.val, set_units(0.1, km^2))
+
+#read ecan core zone
+core <- st_read("shapefiles/ecan_core.shp", quiet = TRUE)
+
+#ensure that data crs is uniform
+st_crs(ch.filled) <- 4326
+st_crs(core) <- 4326
+
+#install_github("a-benini/sfhelpers")
+library(sfhelpers) 
+
+#identify mismatch by getting the difference between the core zone and critical habitat
+#condition: Highest Importance + Core Zone = "Matched, with ch and core zone"; Highest Importance + No Core Zone = "Mismatched, with ch but no protection"; No Important Habitat + Core Zone = "Mismatched, with protection but no ch"
+
+ch.core <- st_or(ch.filled, core)#use union function similar to QGIS
+#replace NAs with 0
+ch.core.r.na <- ch.core %>% replace(is.na(.), 0)
+
+#apply condition
+ch.core.m <- mutate(ch.core.r.na, diff = if_else(impthab %in% "Highest Importance" & ECAN_CODE==1, "Matched, with CH and CZ", if_else(impthab %in% "Highest Importance" & ECAN_CODE==0, "Mismatched, with CH but no CZ", if_else(impthab==0 & ECAN_CODE==1, "Mismatched, with CZ but no CH", "Not data"))))
+
+#plot
+p.ch <- vect(ch.core.m)
+plot(p.ch, "diff", lwd = 0.01, main = "CH and ECAN core zone assessment", mar=c(3.1, 3.1, 2.1, 12.1))
+
+#export critical habitat and ecan assessment
+st_write(ch.core.m, "shapefiles/ch.core.m.shp", driver="ESRI Shapefile")
 ```
