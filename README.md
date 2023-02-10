@@ -2,12 +2,12 @@ This repo contains the R code used for vegetation and species distribution analy
 
 ## Vegetation Classification
 
-1. Busuanga https://csupsup.github.io/CritHabPalawan/veg_classification/rmarkdown_outputs/busuanga_sat_image_classification.html
-2. El Nido https://csupsup.github.io/CritHabPalawan/veg_classification/rmarkdown_outputs/el_nido_sat_image_classification.html
-3. Roxas https://csupsup.github.io/CritHabPalawan/veg_classification/rmarkdown_outputs/roxas_sat_image_classification.html
+1. Busuanga https://csupsup.github.io/CritHabPalawan/veg_classification/busuanga_sat_image_classification.html
+2. El Nido https://csupsup.github.io/CritHabPalawan/veg_classification/el_nido_sat_image_classification.html
+3. Roxas https://csupsup.github.io/CritHabPalawan/veg_classification/roxas_sat_image_classification.html
 4. Balabac:
-    - Tile 1 https://csupsup.github.io/CritHabPalawan/veg_classification/rmarkdown_outputs/balabac_t1_sat_image_classification.html
-    - Tile 2 https://csupsup.github.io/CritHabPalawan/veg_classification/rmarkdown_outputs/balabac_t2_sat_image_classification.html
+    - Tile 1 https://csupsup.github.io/CritHabPalawan/veg_classification/balabac_t1_sat_image_classification.html
+    - Tile 2 https://csupsup.github.io/CritHabPalawan/veg_classification/balabac_t2_sat_image_classification.html
 
 ## Species Distribution Modelling
 1.  Code https://csupsup.github.io/CritHabPalawan/ssdm/ssdm_palawan.R
